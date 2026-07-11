@@ -5,11 +5,13 @@ import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
+import { useIsMobile } from "@/hooks/use-media-query";
 import type { SearchInput } from "@/hooks/use-train-search";
-import { toIsoDate } from "@/lib/datetime";
+import { fromIsoDate, toIsoDate } from "@/lib/datetime";
 import type { Station } from "@/lib/types";
 import { StationCombobox } from "./StationCombobox";
 
@@ -32,6 +34,7 @@ export function SearchForm({
   const [dateOpen, setDateOpen] = useState(false);
   const [withTransfers, setWithTransfers] = useState(false);
   const [searchAll, setSearchAll] = useState(false);
+  const isMobile = useIsMobile();
 
   const sameStation = from !== null && from.code === to?.code;
   const canSearch = from !== null && to !== null && !sameStation;
@@ -101,33 +104,46 @@ export function SearchForm({
           <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
             <div className="space-y-1.5">
               <Label htmlFor="date">Datum</Label>
-              <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="date"
-                    type="button"
-                    variant="outline"
-                    className="w-full justify-start font-normal"
-                  >
-                    <CalendarIcon className="opacity-70" />
-                    {format(date, "d. MMMM yyyy.", { locale: srLatn })}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(selected) => {
-                      if (selected) {
-                        setDate(selected);
-                        setDateOpen(false);
-                      }
-                    }}
-                    disabled={{ before: today }}
-                    autoFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              {isMobile ? (
+                <Input
+                  id="date"
+                  type="date"
+                  value={toIsoDate(date)}
+                  min={toIsoDate(today)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    if (value) setDate(fromIsoDate(value));
+                  }}
+                />
+              ) : (
+                <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="date"
+                      type="button"
+                      variant="outline"
+                      className="w-full justify-start font-normal"
+                    >
+                      <CalendarIcon className="opacity-70" />
+                      {format(date, "d. MMMM yyyy.", { locale: srLatn })}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={(selected) => {
+                        if (selected) {
+                          setDate(selected);
+                          setDateOpen(false);
+                        }
+                      }}
+                      disabled={{ before: today }}
+                      autoFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </div>
 
