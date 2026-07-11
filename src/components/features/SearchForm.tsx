@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-import { srLatn } from "date-fns/locale";
 import { ArrowRightLeft, CalendarIcon, Search } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import type { SearchInput } from "@/hooks/use-train-search";
-import { toIsoDate } from "@/lib/datetime";
+import { formatSerbianDate, toIsoDate } from "@/lib/datetime";
 import type { Station } from "@/lib/types";
 import { StationCombobox } from "./StationCombobox";
 
@@ -108,7 +106,7 @@ export function SearchForm({
                     className="w-full justify-start font-normal"
                   >
                     <CalendarIcon className="opacity-70" />
-                    {format(date, "d. MMMM yyyy.", { locale: srLatn })}
+                    {formatSerbianDate(date)}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
