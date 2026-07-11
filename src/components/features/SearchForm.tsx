@@ -1,12 +1,15 @@
-import { ArrowRightLeft, Search } from "lucide-react";
+import { format } from "date-fns";
+import { srLatn } from "date-fns/locale";
+import { ArrowRightLeft, CalendarIcon, Search } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import type { SearchInput } from "@/hooks/use-train-search";
-import { todayIso } from "@/lib/datetime";
+import { toIsoDate } from "@/lib/datetime";
 import type { Station } from "@/lib/types";
 import { StationCombobox } from "./StationCombobox";
 
@@ -25,12 +28,17 @@ export function SearchForm({
 }: SearchFormProps) {
   const [from, setFrom] = useState<Station | null>(null);
   const [to, setTo] = useState<Station | null>(null);
-  const [dateIso, setDateIso] = useState<string>(todayIso());
+  const [date, setDate] = useState<Date>(() => new Date());
+  const [dateOpen, setDateOpen] = useState(false);
   const [withTransfers, setWithTransfers] = useState(false);
   const [searchAll, setSearchAll] = useState(false);
 
   const sameStation = from !== null && from.code === to?.code;
   const canSearch = from !== null && to !== null && !sameStation;
+
+  // Disable past days in the calendar.
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   function swap() {
     setFrom(to);
@@ -43,7 +51,7 @@ export function SearchForm({
     onSearch({
       from,
       to,
-      dateIso,
+      dateIso: toIsoDate(date),
       withTransfers,
       transferScope: searchAll ? "all" : "belgrade",
     });
@@ -93,13 +101,33 @@ export function SearchForm({
           <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
             <div className="space-y-1.5">
               <Label htmlFor="date">Datum</Label>
-              <Input
-                id="date"
-                type="date"
-                value={dateIso}
-                min={todayIso()}
-                onChange={(event) => setDateIso(event.target.value)}
-              />
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start font-normal"
+                  >
+                    <CalendarIcon className="opacity-70" />
+                    {format(date, "d. MMMM yyyy.", { locale: srLatn })}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(selected) => {
+                      if (selected) {
+                        setDate(selected);
+                        setDateOpen(false);
+                      }
+                    }}
+                    disabled={{ before: today }}
+                    autoFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

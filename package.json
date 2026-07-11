@@ -20,8 +20,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
     "lucide-react": "^1.24.0",
     "react": "^19.2.7",
+    "react-day-picker": "^10.0.1",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
     "tailwind-merge": "^3.6.0"
