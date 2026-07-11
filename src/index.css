@@ -34,6 +34,10 @@
   --destructive: hsl(0 72% 45%);
   --destructive-foreground: hsl(210 40% 98%);
 
+  /* Burgundy accent for in-progress trains; pairs with the navy palette. */
+  --running: hsl(345 63% 38%);
+  --running-foreground: hsl(210 40% 98%);
+
   --border: hsl(214 28% 86%);
   --input: hsl(214 28% 86%);
   --ring: hsl(222 47% 40%);
@@ -64,6 +68,10 @@
   --destructive: hsl(0 63% 55%);
   --destructive-foreground: hsl(210 40% 98%);
 
+  /* Burgundy accent for in-progress trains; pairs with the navy palette. */
+  --running: hsl(345 60% 58%);
+  --running-foreground: hsl(222 47% 11%);
+
   --border: hsl(217 33% 22%);
   --input: hsl(217 33% 24%);
   --ring: hsl(210 90% 66%);
@@ -86,6 +94,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-running: var(--running);
+  --color-running-foreground: var(--running-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
