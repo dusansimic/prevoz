@@ -7,11 +7,18 @@ import { cn } from "@/lib/utils";
 import { TrainDetailsPanel } from "./TrainDetailsPanel";
 
 /** A direct connection, expandable to its full stop list. */
-export function DirectTrainCard({ train }: { train: DirectTrain }) {
+export function DirectTrainCard({
+  train,
+  inProgress = false,
+}: {
+  train: DirectTrain;
+  /** Train has departed but not yet arrived; marked with a burgundy accent. */
+  inProgress?: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className={cn("overflow-hidden", inProgress && "border-l-4 border-l-running")}>
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -29,6 +36,11 @@ export function DirectTrainCard({ train }: { train: DirectTrain }) {
             {train.rank && (
               <Badge variant="secondary" className="font-normal">
                 {train.rank}
+              </Badge>
+            )}
+            {inProgress && (
+              <Badge variant="running" className="font-normal">
+                U toku
               </Badge>
             )}
           </div>

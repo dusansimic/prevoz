@@ -39,11 +39,18 @@ function LegRow({ leg }: { leg: JourneyLeg }) {
 }
 
 /** A one-transfer journey: two legs joined by a layover at the transfer station. */
-export function TransferJourneyCard({ journey }: { journey: TransferJourney }) {
+export function TransferJourneyCard({
+  journey,
+  inProgress = false,
+}: {
+  journey: TransferJourney;
+  /** Journey has started but not yet finished; marked with a burgundy accent. */
+  inProgress?: boolean;
+}) {
   const [first, second] = journey.legs;
 
   return (
-    <Card className="space-y-3 p-4">
+    <Card className={cn("space-y-3 p-4", inProgress && "border-l-4 border-l-running")}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-lg font-semibold tabular-nums">
           <span>{journey.departureTime}</span>
@@ -51,6 +58,11 @@ export function TransferJourneyCard({ journey }: { journey: TransferJourney }) {
           <span>{journey.arrivalTime}</span>
         </div>
         <div className="flex items-center gap-2">
+          {inProgress && (
+            <Badge variant="running" className="font-normal">
+              U toku
+            </Badge>
+          )}
           <Badge variant="secondary" className="font-normal">
             {formatMinutes(journey.totalMinutes)}
           </Badge>
