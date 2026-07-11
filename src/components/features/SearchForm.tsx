@@ -31,7 +31,6 @@ export function SearchForm({
   const [date, setDate] = useState<Date>(() => new Date());
   const [dateOpen, setDateOpen] = useState(false);
   const [withTransfers, setWithTransfers] = useState(false);
-  const [searchAll, setSearchAll] = useState(false);
 
   const sameStation = from !== null && from.code === to?.code;
   const canSearch = from !== null && to !== null && !sameStation;
@@ -53,7 +52,6 @@ export function SearchForm({
       to,
       dateIso: toIsoDate(date),
       withTransfers,
-      transferScope: searchAll ? "all" : "belgrade",
     });
   }
 
@@ -142,21 +140,6 @@ export function SearchForm({
                 onCheckedChange={setWithTransfers}
               />
             </div>
-            {withTransfers && (
-              <div className="flex items-center justify-between gap-3">
-                <Label
-                  htmlFor="all-stations"
-                  className="cursor-pointer text-muted-foreground"
-                >
-                  Presedanje na svim stanicama (sporije, podrazumevano samo beogradske)
-                </Label>
-                <Switch
-                  id="all-stations"
-                  checked={searchAll}
-                  onCheckedChange={setSearchAll}
-                />
-              </div>
-            )}
           </div>
 
           {sameStation && (
