@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Navy color scheme. Light mode: navy text on a near-white, faintly blue
+ * canvas. Dark mode: light text on deep navy. Tokens follow the shadcn/ui
+ * naming so its components pick them up unchanged.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222 47% 12%);
+
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 12%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 12%);
+
+  --primary: hsl(222 47% 24%);
+  --primary-foreground: hsl(210 40% 98%);
+
+  --secondary: hsl(214 32% 91%);
+  --secondary-foreground: hsl(222 47% 20%);
+
+  --muted: hsl(214 32% 93%);
+  --muted-foreground: hsl(215 20% 42%);
+
+  --accent: hsl(213 45% 90%);
+  --accent-foreground: hsl(222 47% 20%);
+
+  --destructive: hsl(0 72% 45%);
+  --destructive-foreground: hsl(210 40% 98%);
+
+  --border: hsl(214 28% 86%);
+  --input: hsl(214 28% 86%);
+  --ring: hsl(222 47% 40%);
+}
+
+.dark {
+  --background: hsl(222 47% 9%);
+  --foreground: hsl(210 40% 96%);
+
+  --card: hsl(222 44% 13%);
+  --card-foreground: hsl(210 40% 96%);
+
+  --popover: hsl(222 44% 13%);
+  --popover-foreground: hsl(210 40% 96%);
+
+  --primary: hsl(210 90% 66%);
+  --primary-foreground: hsl(222 47% 11%);
+
+  --secondary: hsl(217 33% 18%);
+  --secondary-foreground: hsl(210 40% 96%);
+
+  --muted: hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+
+  --accent: hsl(217 33% 22%);
+  --accent-foreground: hsl(210 40% 96%);
+
+  --destructive: hsl(0 63% 55%);
+  --destructive-foreground: hsl(210 40% 98%);
+
+  --border: hsl(217 33% 22%);
+  --input: hsl(217 33% 24%);
+  --ring: hsl(210 90% 66%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family:
+      ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
