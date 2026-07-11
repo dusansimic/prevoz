@@ -1,0 +1,5 @@
+# Cloudflare Pages project config. The dashboard reads this on Git-integration
+# builds; it also lets `wrangler pages dev/deploy` work locally.
+name = "prevoz"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-07-11"
