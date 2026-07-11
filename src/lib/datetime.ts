@@ -13,6 +13,11 @@ export function todayIso(): string {
   return toIsoDate(new Date());
 }
 
+/** ISO `YYYY-MM-DD` → local `Date` (midnight, no timezone off-by-one). */
+export function fromIsoDate(iso: string): Date {
+  return new Date(`${iso}T00:00:00`);
+}
+
 /** Epoch milliseconds for an ISO date + `HH:mm` pair. */
 export function toEpoch(dateIso: string, hhmm: string): number {
   const time = /^\d{1,2}:\d{2}$/.test(hhmm) ? hhmm : "00:00";
@@ -43,4 +48,16 @@ export function formatShortDate(dateIso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateIso);
   if (!m) return dateIso;
   return `${m[3]}.${m[2]}.`;
+}
+
+/**
+ * A `Date` or ISO `YYYY-MM-DD` string → Serbian date `dd. mm. yyyy.`
+ * (e.g. `"11. 07. 2026."`). Timezone-safe for the string case.
+ */
+export function formatSerbianDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(`${date}T00:00:00`) : date;
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+  return `${dd}. ${mm}. ${yyyy}.`;
 }

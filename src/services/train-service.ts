@@ -71,25 +71,17 @@ export function getTrainDetails(ref: TrainDetailsRef): Promise<TrainDetails> {
   return sv.getTrainDetails(ref);
 }
 
-/** Which stations to try as transfer points. */
-export type TransferScope = "belgrade" | "all";
-
 /**
- * Plan one-transfer journeys. `scope` chooses the candidate transfer stations:
- * `"belgrade"` tries only Belgrade stations (fast); `"all"` tries every station,
- * Belgrade first — matching "search Belgrade stations, then all other stations".
+ * Plan one-transfer journeys. Transfer candidates are always Belgrade stations
+ * — the practical set of change points on the network.
  */
 export async function planTransfers(
   from: Station,
   to: Station,
   dateIso: string,
-  scope: TransferScope,
   options: TransferSearchOptions = {},
 ) {
   const all = await getStations();
-  const candidates =
-    scope === "belgrade"
-      ? belgradeFirst(all).filter(isBelgradeStation)
-      : belgradeFirst(all);
+  const candidates = belgradeFirst(all).filter(isBelgradeStation);
   return planOneTransfer(from, to, dateIso, candidates, options);
 }

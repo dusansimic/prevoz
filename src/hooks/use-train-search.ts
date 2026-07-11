@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react";
 import type { DirectTrain, Station, TransferJourney } from "@/lib/types";
-import type { TransferScope } from "@/services/train-service";
 import { planTransfers, searchDirect } from "@/services/train-service";
 
 export interface SearchInput {
@@ -8,7 +7,6 @@ export interface SearchInput {
   to: Station;
   dateIso: string;
   withTransfers: boolean;
-  transferScope: TransferScope;
 }
 
 export interface SearchState {
@@ -68,20 +66,14 @@ export function useTrainSearch() {
 
       if (!input.withTransfers) return;
 
-      const transfers = await planTransfers(
-        input.from,
-        input.to,
-        input.dateIso,
-        input.transferScope,
-        {
-          signal: controller.signal,
-          onProgress: (done, total) => {
-            if (id === runId.current) {
-              setState((prev) => ({ ...prev, progress: { done, total } }));
-            }
-          },
+      const transfers = await planTransfers(input.from, input.to, input.dateIso, {
+        signal: controller.signal,
+        onProgress: (done, total) => {
+          if (id === runId.current) {
+            setState((prev) => ({ ...prev, progress: { done, total } }));
+          }
         },
-      );
+      });
       if (id !== runId.current) return;
 
       setState((prev) => ({
