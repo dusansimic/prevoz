@@ -49,3 +49,15 @@ export function formatShortDate(dateIso: string): string {
   if (!m) return dateIso;
   return `${m[3]}.${m[2]}.`;
 }
+
+/**
+ * A `Date` or ISO `YYYY-MM-DD` string → Serbian date `dd. mm. yyyy.`
+ * (e.g. `"11. 07. 2026."`). Timezone-safe for the string case.
+ */
+export function formatSerbianDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(`${date}T00:00:00`) : date;
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+  return `${dd}. ${mm}. ${yyyy}.`;
+}

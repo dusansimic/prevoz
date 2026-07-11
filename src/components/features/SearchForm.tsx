@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-import { srLatn } from "date-fns/locale";
 import { ArrowRightLeft, CalendarIcon, Search } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Switch } from "@/components/ui/switch";
 import { useIsMobile } from "@/hooks/use-media-query";
 import type { SearchInput } from "@/hooks/use-train-search";
-import { fromIsoDate, toIsoDate } from "@/lib/datetime";
+import { formatSerbianDate, fromIsoDate, toIsoDate } from "@/lib/datetime";
 import type { Station } from "@/lib/types";
 import { StationCombobox } from "./StationCombobox";
 
@@ -33,7 +31,6 @@ export function SearchForm({
   const [date, setDate] = useState<Date>(() => new Date());
   const [dateOpen, setDateOpen] = useState(false);
   const [withTransfers, setWithTransfers] = useState(false);
-  const [searchAll, setSearchAll] = useState(false);
   const isMobile = useIsMobile();
 
   const sameStation = from !== null && from.code === to?.code;
@@ -56,7 +53,6 @@ export function SearchForm({
       to,
       dateIso: toIsoDate(date),
       withTransfers,
-      transferScope: searchAll ? "all" : "belgrade",
     });
   }
 
@@ -125,7 +121,7 @@ export function SearchForm({
                       className="w-full justify-start font-normal"
                     >
                       <CalendarIcon className="opacity-70" />
-                      {format(date, "d. MMMM yyyy.", { locale: srLatn })}
+                      {formatSerbianDate(date)}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -158,21 +154,6 @@ export function SearchForm({
                 onCheckedChange={setWithTransfers}
               />
             </div>
-            {withTransfers && (
-              <div className="flex items-center justify-between gap-3">
-                <Label
-                  htmlFor="all-stations"
-                  className="cursor-pointer text-muted-foreground"
-                >
-                  Presedanje na svim stanicama (sporije, podrazumevano samo beogradske)
-                </Label>
-                <Switch
-                  id="all-stations"
-                  checked={searchAll}
-                  onCheckedChange={setSearchAll}
-                />
-              </div>
-            )}
           </div>
 
           {sameStation && (
