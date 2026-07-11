@@ -13,6 +13,11 @@ export function todayIso(): string {
   return toIsoDate(new Date());
 }
 
+/** ISO `YYYY-MM-DD` → local `Date` (midnight, no timezone off-by-one). */
+export function fromIsoDate(iso: string): Date {
+  return new Date(`${iso}T00:00:00`);
+}
+
 /** Epoch milliseconds for an ISO date + `HH:mm` pair. */
 export function toEpoch(dateIso: string, hhmm: string): number {
   const time = /^\d{1,2}:\d{2}$/.test(hhmm) ? hhmm : "00:00";
