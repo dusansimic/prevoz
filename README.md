@@ -14,31 +14,26 @@ pnpm check      # Biome format + lint
 
 See `AGENTS.md` for architecture and conventions.
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare (Workers + static assets)
 
-Everything code-side is already in the repo — the `/redvoznje` proxy
-(`functions/redvoznje/[[path]].ts`), `wrangler.toml`, SPA `_redirects`, and Node/
-pnpm pins. No environment variables are required: the proxy is same-origin, so the
-app fetches data with zero extra config.
+Everything code-side is already in the repo — the Worker that serves the app and
+proxies the API (`worker/index.ts`), `wrangler.toml`, and Node/pnpm pins. No
+environment variables are required: the proxy is same-origin, so the app fetches
+data with zero extra config.
 
 Manual steps in the Cloudflare dashboard (one-time):
 
-1. **Push this repo to GitHub** (if not already): create a repo and
-   `git push -u origin main`.
-2. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git**.
+1. **Push this repo to GitHub** (if not already): `git push -u origin main`.
+2. Cloudflare dashboard → **Workers & Pages → Create → Import a repository**.
    Authorize GitHub and select this repository.
-3. **Build settings:**
-   - Production branch: `main`
-   - Framework preset: **Vite** (or None)
+3. **Build settings** (usually auto-detected from `wrangler.toml`):
    - Build command: `pnpm build`
-   - Build output directory: `dist`
-   - (Root directory: leave as `/`.)
+   - Deploy command: `npx wrangler deploy`
    - Environment variables: **none needed.**
-4. Click **Save and Deploy** and wait for the first build.
-5. **Custom domain:** open the Pages project → **Custom domains → Set up a custom
-   domain** → enter your domain. If the domain's DNS is on Cloudflare it wires the
-   records automatically; otherwise follow the shown CNAME. SSL is issued
-   automatically.
+4. **Save and Deploy** and wait for the first build.
+5. **Custom domain:** open the Worker → **Settings → Domains & Routes → Add →
+   Custom domain** → enter your domain. If its DNS is on Cloudflare the records
+   are wired automatically; SSL is issued automatically.
 
-After this, every push to `main` auto-builds and deploys. To test the Function
-locally: `pnpm build && npx wrangler pages dev dist`.
+After this, every push to `main` auto-builds and deploys. Local check:
+`pnpm build && npx wrangler dev`.

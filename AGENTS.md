@@ -75,25 +75,27 @@ requests without a browser-like `User-Agent` (which the browser cannot set from
   passed a wrapper (`(i, init) => fetch(i, init)`) or the browser throws
   "Illegal invocation". Done in `src/lib/sdk.ts`.
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare Workers + static assets)
 
-Cloudflare Pages hosts the static app **and** the `/redvoznje` proxy in one place,
-so there is no CORS problem and **no `VITE_API_BASE` is needed** — the SDK's
-default `/redvoznje` works in production exactly as in dev.
+Deployed as a **Cloudflare Worker with static assets** — the Worker serves the
+built SPA **and** proxies the `/redvoznje` API on the same origin, so there is no
+CORS problem and **no `VITE_API_BASE` is needed**; the SDK's default `/redvoznje`
+works in production exactly as in dev.
 
 In-repo config (all committed, nothing to configure by hand):
 
-- `functions/redvoznje/[[path]].ts` — Pages Function proxying `/redvoznje/*` to
-  the upstream with the browser UA (same origin as the app).
-- `wrangler.toml` — `pages_build_output_dir = "dist"`, name, compatibility date.
-- `public/_redirects` — SPA fallback (`/* → /index.html 200`); the Function route
-  takes precedence, so proxy calls are unaffected.
+- `worker/index.ts` — the Worker. Serves `dist` via the `ASSETS` binding and
+  proxies `/redvoznje/*` to the upstream with the browser UA. It is bundled by
+  Wrangler, not by Vite, and is excluded from the app `tsc` build.
+- `wrangler.toml` — `main = worker/index.ts`, `[assets] directory = "./dist"` with
+  `not_found_handling = "single-page-application"` (SPA fallback).
 - `.nvmrc` (Node 22) and `package.json#packageManager` (pnpm) pin the toolchain.
 - `VITE_BASE` stays `/` — served from a custom-domain root.
 
-Deploy = connect the GitHub repo in the Cloudflare dashboard (Git integration);
-every push to `main` builds with `pnpm build` and publishes `dist/`. Custom domain
-+ free SSL are set in the Pages project. See README for the click-by-click steps.
+The build pipeline runs `pnpm build` then `npx wrangler deploy`. Every push to
+`main` (Git integration) rebuilds and redeploys. Custom domain + free SSL are set
+on the Worker. See README for the console steps. Local check:
+`pnpm build && npx wrangler dev`.
 
 ## Features: search & transfers
 
