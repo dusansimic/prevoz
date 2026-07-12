@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import type { DirectTrain, Station, TransferJourney } from "@/lib/types";
 import { planTransfers, searchDirect } from "@/services/train-service";
+import { useSettingsStore } from "@/stores/settings";
 
 export interface SearchInput {
   from: Station;
@@ -66,7 +67,11 @@ export function useTrainSearch() {
 
       if (!input.withTransfers) return;
 
+      // Read the latest persisted settings at search time.
+      const { minTransferMinutes, maxLayoverMinutes } = useSettingsStore.getState();
       const transfers = await planTransfers(input.from, input.to, input.dateIso, {
+        minTransferMinutes,
+        maxTransferMinutes: maxLayoverMinutes,
         signal: controller.signal,
         onProgress: (done, total) => {
           if (id === runId.current) {
