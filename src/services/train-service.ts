@@ -2,6 +2,7 @@
 // ordering, direct search, one-transfer planning, and train details. UI code
 // talks to this module rather than the SDK directly (AGENTS.md § Features).
 
+import { fetchEkartaTrains } from "@/lib/ekarta";
 import { sv } from "@/lib/sdk";
 import { planOneTransfer, type TransferSearchOptions } from "@/lib/transfers";
 import type { DirectTrain, Station, TrainDetails, TrainDetailsRef } from "@/lib/types";
@@ -69,6 +70,36 @@ export function searchDirect(
 /** Full stop list / prices for a train from search results. */
 export function getTrainDetails(ref: TrainDetailsRef): Promise<TrainDetails> {
   return sv.getTrainDetails(ref);
+}
+
+// e-karta ticket-shop offers, keyed `from|to|dateIso`. The inner promise
+// resolves to a `trainNumber → priceRSD` map for the relation; all cards for one
+// relation share a single request. Mirrors the `stationsPromise` idiom above.
+const ekartaOffers = new Map<string, Promise<Map<string, number>>>();
+
+/**
+ * For a relation + date, a `trainNumber → price (RSD)` map of trains sold online
+ * (1 passenger, 2nd class). A train missing from the map is not sold online.
+ * Fail-soft: on any error the entry is dropped (so a later render can retry) and
+ * an empty map is returned — the shop is enrichment, never blocking.
+ */
+export function getEkartaOffers(
+  fromCode: string,
+  toCode: string,
+  dateIso: string,
+): Promise<Map<string, number>> {
+  const key = `${fromCode}|${toCode}|${dateIso}`;
+  let promise = ekartaOffers.get(key);
+  if (!promise) {
+    promise = fetchEkartaTrains(fromCode, toCode, dateIso)
+      .then((trains) => new Map(trains.map((t) => [String(t.brvoz), t.cenau])))
+      .catch(() => {
+        ekartaOffers.delete(key); // allow retry after a failure
+        return new Map<string, number>();
+      });
+    ekartaOffers.set(key, promise);
+  }
+  return promise;
 }
 
 /**

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { formatMinutes } from "@/lib/datetime";
 import type { JourneyLeg, TransferJourney } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { EkartaPriceBadge } from "./EkartaPriceBadge";
 import { TrainDetailsPanel } from "./TrainDetailsPanel";
 
 function LegRow({ leg }: { leg: JourneyLeg }) {
@@ -26,6 +27,13 @@ function LegRow({ leg }: { leg: JourneyLeg }) {
           {leg.from.name} <ArrowRight className="inline size-3" /> {leg.to.name}
         </span>
         <span className="shrink-0 text-muted-foreground">Voz {train.trainNumber}</span>
+        {train.soko && <Badge className="shrink-0 font-normal">Soko</Badge>}
+        <EkartaPriceBadge
+          fromCode={leg.from.code}
+          toCode={leg.to.code}
+          dateIso={train.departureDate}
+          trainNumber={train.trainNumber}
+        />
         <span className="w-12 shrink-0 text-right font-semibold tabular-nums">
           {train.arrivalTime}
         </span>
@@ -33,6 +41,7 @@ function LegRow({ leg }: { leg: JourneyLeg }) {
           className={cn("size-4 shrink-0 transition-transform", open && "rotate-180")}
         />
       </button>
+
       {open && <TrainDetailsPanel detailsRef={train.detailsRef} />}
     </div>
   );
