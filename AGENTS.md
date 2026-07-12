@@ -37,7 +37,8 @@ src/
 │   ├── sdk.ts      # configured SrbijaVoz client (proxy baseUrl + bound fetch)
 │   ├── transfers.ts    # one-transfer journey planner
 │   ├── datetime.ts, types.ts, utils.ts
-├── pages/          # route pages (SearchPage)
+├── pages/          # route pages (SearchPage, SettingsPage)
+├── stores/         # zustand stores (settings — persisted to localStorage)
 ├── services/       # train-service.ts — the only module UI calls for data
 ├── App.tsx         # providers + router + layout
 └── main.tsx        # entry (#root)
@@ -106,7 +107,10 @@ on the Worker. See README for the console steps. Local check:
   UI defaults to `belgrade`, with a toggle for `all`). For each candidate it
   searches both legs and pairs each first leg with the earliest valid second leg
   (layover between `minTransferMinutes` and `maxTransferMinutes`). Concurrency is
-  capped; a failing relation is skipped, not fatal.
+  capped; a failing relation is skipped, not fatal. The min-transfer and
+  max-layover bounds are user-configurable on the **Settings** page (`/settings`),
+  persisted via the zustand store in `stores/settings.ts`; unset → the defaults
+  in `lib/transfers.ts`. `use-train-search` reads them at search time.
 - Station selectors filter the cached directory locally, accent-insensitive
   (`foldText`); typing does not hit the network.
 
