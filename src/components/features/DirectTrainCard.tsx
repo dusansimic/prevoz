@@ -4,14 +4,24 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { DirectTrain } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { EkartaPriceBadge } from "./EkartaPriceBadge";
 import { TrainDetailsPanel } from "./TrainDetailsPanel";
 
 /** A direct connection, expandable to its full stop list. */
 export function DirectTrainCard({
   train,
+  fromCode,
+  toCode,
+  dateIso,
   inProgress = false,
 }: {
   train: DirectTrain;
+  /** Origin station code (search input) — for the ticket-shop lookup. */
+  fromCode: string;
+  /** Destination station code (search input) — for the ticket-shop lookup. */
+  toCode: string;
+  /** Travel date, ISO `YYYY-MM-DD`. */
+  dateIso: string;
   /** Train has departed but not yet arrived; marked with a burgundy accent. */
   inProgress?: boolean;
 }) {
@@ -38,6 +48,13 @@ export function DirectTrainCard({
                 {train.rank}
               </Badge>
             )}
+            {train.soko && <Badge className="font-normal">Soko</Badge>}
+            <EkartaPriceBadge
+              fromCode={fromCode}
+              toCode={toCode}
+              dateIso={dateIso}
+              trainNumber={train.trainNumber}
+            />
             {inProgress && (
               <Badge variant="running" className="font-normal">
                 U toku

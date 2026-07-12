@@ -43,6 +43,16 @@ export function formatMinutes(total: number): string {
   return `${h} h ${m} min`;
 }
 
+/**
+ * ISO `YYYY-MM-DD` → the e-karta shop API's date format: unpadded **M-D-YYYY**
+ * (note the month-first order and no leading zeros, e.g. `"7-5-2026"`).
+ */
+export function toEkartaDate(dateIso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateIso);
+  if (!m) return dateIso;
+  return `${Number(m[2])}-${Number(m[3])}-${m[1]}`;
+}
+
 /** ISO `YYYY-MM-DD` → `dd.MM.` for compact display. */
 export function formatShortDate(dateIso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateIso);

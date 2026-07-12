@@ -99,6 +99,15 @@ function imgTitles(html: string): string[] {
   return [...html.matchAll(/<img[^>]*\btitle="([^"]*)"/gi)].map((m) => clean(m[1]!));
 }
 
+/**
+ * True when the rank cell carries the Soko high-speed image. The rank `title`
+ * is just `"INTER CITY"` for Soko too, so the only signal is the image file
+ * (`.../Content/img/soko.svg`).
+ */
+function hasSoko(html: string): boolean {
+  return /\bsoko\.svg\b/i.test(html);
+}
+
 /** `<td>` contents of a row, in document order. */
 function cells(rowHtml: string): string[] {
   return [...rowHtml.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((m) => m[1]!);
@@ -150,6 +159,7 @@ export function parseDirectResults(html: string, url: string): DirectTrain[] {
       delay: textContent(td[5]!),
       duration: textContent(td[6]!),
       rank: imgTitles(td[7]!).join(", "),
+      soko: hasSoko(td[7]!),
       offers: imgTitles(td[8]!),
       note: textContent(td[9]!),
       detailsRef: parseDetailsButton(row, url),
@@ -170,6 +180,7 @@ export function parseBoard(html: string, url: string): BoardEntry[] {
       otherStationName: textContent(td[2]!),
       otherTime: textContent(td[3]!),
       rank: imgTitles(td[4]!).join(", "),
+      soko: hasSoko(td[4]!),
       offers: imgTitles(td[5]!),
       delay: textContent(td[6]!),
       note: textContent(td[7]!),

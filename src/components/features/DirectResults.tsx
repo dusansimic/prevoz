@@ -4,10 +4,19 @@ import { DirectTrainCard } from "./DirectTrainCard";
 
 export function DirectResults({
   trains,
+  fromCode,
+  toCode,
+  dateIso,
   now,
   showAll,
 }: {
   trains: DirectTrain[];
+  /** Origin station code (search input) — passed to each card's shop lookup. */
+  fromCode: string;
+  /** Destination station code (search input) — passed to each card. */
+  toCode: string;
+  /** Travel date, ISO `YYYY-MM-DD`. */
+  dateIso: string;
   /** Epoch ms to compare against; non-null only when the query date is today. */
   now: number | null;
   /** When true, keep departed trains visible even for today. */
@@ -29,6 +38,9 @@ export function DirectResults({
           <DirectTrainCard
             key={`${train.trainNumber}-${train.departureTime}`}
             train={train}
+            fromCode={fromCode}
+            toCode={toCode}
+            dateIso={dateIso}
             inProgress={inProgress}
           />
         );

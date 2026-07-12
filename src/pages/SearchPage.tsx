@@ -77,7 +77,14 @@ function Results({
         {loadingDirect ? (
           <ResultSkeleton />
         ) : state.direct.length > 0 ? (
-          <DirectResults trains={state.direct} now={now} showAll={showAll} />
+          <DirectResults
+            trains={state.direct}
+            fromCode={state.query.from.code}
+            toCode={state.query.to.code}
+            dateIso={state.query.dateIso}
+            now={now}
+            showAll={showAll}
+          />
         ) : (
           <EmptyNote>Nema direktnih vozova za izabranu relaciju i datum.</EmptyNote>
         )}

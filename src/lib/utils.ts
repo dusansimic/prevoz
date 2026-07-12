@@ -6,6 +6,12 @@ export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
+/** Serbian-formatted price with no decimals, e.g. `513` → `"513 RSD"`. */
+export function formatRsd(amount: number): string {
+  const n = new Intl.NumberFormat("sr-RS", { maximumFractionDigits: 0 }).format(amount);
+  return `${n} RSD`;
+}
+
 /**
  * Lowercase and strip Serbian Latin diacritics so `"nis"` matches `"NIŠ"` and
  * `"djordje"` matches `"Đorđe"`. Used for accent-insensitive station search.

@@ -47,6 +47,9 @@ export interface DirectTrain {
   delay: string;
   /** Train category, e.g. `"REGIO VOZ"` (from the rank image title). */
   rank: string;
+  /** Soko high-speed train. Not distinguishable from the `rank` title (also
+   * `"INTER CITY"`); detected from the rank image (`soko.svg`). */
+  soko: boolean;
   /** Offer labels, e.g. `["Prvi razred", "Drugi razred", "Bicikla - Ograničen broj mesta"]`. */
   offers: string[];
   /** Free-form remark (empty string when none). */
@@ -66,6 +69,8 @@ export interface BoardEntry {
   otherTime: string;
   delay: string;
   rank: string;
+  /** Soko high-speed train (detected from the rank image, `soko.svg`). */
+  soko: boolean;
   offers: string[];
   note: string;
   detailsRef: TrainDetailsRef;
